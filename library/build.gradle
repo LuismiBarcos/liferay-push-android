@@ -81,4 +81,7 @@ task coverage(type:JacocoReport, dependsOn: "testDebug") {
 	}
 }
 
-coveralls.jacocoReportPath = "$buildDir/reports/jacoco/coverage/coverage.xml"
+coveralls {
+	jacocoReportPath = "$buildDir/reports/jacoco/coverage/coverage.xml"
+	sourceDirs = files(android.sourceSets.main.java.srcDirs).files.absolutePath
+}
