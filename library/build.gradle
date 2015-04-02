@@ -54,9 +54,10 @@ android {
 	}
 }
 
+def srcDirs = files(android.sourceSets.main.java.srcDirs)
+
 task coverage(type:JacocoReport, dependsOn: "testDebug") {
-	def sourceDirs = ['src/gen/java', 'src/main/java']
-	description = "Generate test coverage report"
+	description = "Coverage Report"
 
 	classDirectories = fileTree(
 		dir: "$buildDir/intermediates/classes/debug",
@@ -71,8 +72,7 @@ task coverage(type:JacocoReport, dependsOn: "testDebug") {
 		]
 	)
 
-	additionalSourceDirs = files(sourceDirs)
-	sourceDirectories = files(sourceDirs)
+	sourceDirectories = srcDirs
 	executionData = files("$buildDir/jacoco/testDebug.exec")
 
 	reports {
@@ -83,5 +83,5 @@ task coverage(type:JacocoReport, dependsOn: "testDebug") {
 
 coveralls {
 	jacocoReportPath = "$buildDir/reports/jacoco/coverage/coverage.xml"
-	sourceDirs = files(android.sourceSets.main.java.srcDirs).files.absolutePath
+	sourceDirs = srcDirs.files.absolutePath
 }
