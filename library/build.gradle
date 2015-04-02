@@ -80,3 +80,7 @@ task coverage(type:JacocoReport, dependsOn: "testDebug") {
 		xml.enabled = true
 	}
 }
+
+tasks.coveralls {
+	jacocoReportPath = "$buildDir/reports/jacoco/coverage/coverage.xml"
+}
