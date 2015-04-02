@@ -3,3 +3,6 @@ language: android
 script:
   - cd library
   - ../gradlew assembleDebug testDebug
+
+after_success:
+  - ../gradlew coveralls

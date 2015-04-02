@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
 
 apply from: 'https://raw.githubusercontent.com/brunofarache/liferay-mobile-sdk/master/release-aar.gradle'
 apply from: 'https://raw.githubusercontent.com/brunofarache/liferay-mobile-sdk/master/formatter.gradle'
@@ -24,6 +25,7 @@ buildscript {
 	dependencies {
 		classpath 'com.android.tools.build:gradle:1.1.3'
 		classpath 'com.github.dcendents:android-maven-plugin:1.2'
+		classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1'
 	}
 }
 
