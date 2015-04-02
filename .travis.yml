@@ -5,4 +5,4 @@ script:
   - ../gradlew assembleDebug testDebug
 
 after_success:
-  - ../gradlew coveralls
+  - ../gradlew coverage coveralls
