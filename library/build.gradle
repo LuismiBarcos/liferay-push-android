@@ -81,6 +81,4 @@ task coverage(type:JacocoReport, dependsOn: "testDebug") {
 	}
 }
 
-tasks.coveralls {
-	jacocoReportPath = "$buildDir/reports/jacoco/coverage/coverage.xml"
-}
+coveralls.jacocoReportPath = "$buildDir/reports/jacoco/coverage/coverage.xml"
