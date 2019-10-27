@@ -1,42 +1,34 @@
-/**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- */
-
 package com.liferay.mobile.push;
 
-import android.content.Intent;
-import androidx.core.app.JobIntentService;
-import com.liferay.mobile.push.Push.OnPushNotification;
+import android.app.job.JobParameters;
+import android.app.job.JobService;
+import android.os.PersistableBundle;
 import com.liferay.mobile.push.bus.BusUtil;
-import com.liferay.mobile.push.exception.PushNotificationReceiverException;
 import com.liferay.mobile.push.util.GoogleServices;
 import org.json.JSONObject;
 
-/**
- * @author Bruno Farache
- */
-public class PushNotificationsService extends JobIntentService implements OnPushNotification {
+public class PushNotificationsService extends JobService implements Push.OnPushNotification {
 
 	@Override
-	protected void onHandleWork(Intent intent) {
+	public boolean onStartJob(JobParameters jobParameters) {
 		try {
-			JSONObject pushNotification = _googleService.getPushNotification(this, intent);
+			PersistableBundle persistableBundle = jobParameters.getExtras();
 
-			BusUtil.post(pushNotification);
-			onPushNotification(pushNotification);
-		} catch (PushNotificationReceiverException pnre) {
-			BusUtil.post(pnre);
+			String pushNotification = persistableBundle.getString("pushNotification");
+
+			JSONObject jsonObject = new JSONObject(pushNotification);
+
+			BusUtil.post(jsonObject);
+			onPushNotification(jsonObject);
+		} catch (Exception e) {
+			BusUtil.post(e);
 		}
+		return false;
+	}
+
+	@Override
+	public boolean onStopJob(JobParameters params) {
+		return false;
 	}
 
 	@Override

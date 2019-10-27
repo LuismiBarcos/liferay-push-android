@@ -41,10 +41,11 @@ public class ReceivePushNotificationTest extends BaseTest {
 		final String body = "body";
 		final String message = "message";
 
-		PushNotificationsService service = Robolectric.setupService(PushNotificationsService.class);
+		PushLegacyNotificationsService service =
+			Robolectric.setupService(PushLegacyNotificationsService.class);
 
 		Intent intent = new Intent(RuntimeEnvironment.application.getApplicationContext(),
-			PushNotificationsService.class);
+			PushLegacyNotificationsService.class);
 
 		JSONObject payload = new JSONObject();
 		payload.put(body, message);

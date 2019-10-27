@@ -14,9 +14,17 @@
 
 package com.liferay.mobile.push;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.os.PersistableBundle;
+import android.util.Log;
+import com.liferay.mobile.push.util.GoogleServices;
+import org.json.JSONObject;
 
 /**
  * @author Bruno Farache
@@ -33,9 +41,32 @@ public abstract class PushNotificationsReceiver extends BroadcastReceiver {
 
 		try {
 			Class clazz = Class.forName(className);
-			PushNotificationsService.enqueueWork(context, clazz, JOB_ID, intent);
-		} catch (ClassNotFoundException e) {
+
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				ComponentName serviceComponent = new ComponentName(context, clazz);
+				JobScheduler jobScheduler =
+					(JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+				JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
+				builder.setMinimumLatency(1000);
+				builder.setOverrideDeadline(3000);
+
+				PersistableBundle persistableBundle = new PersistableBundle();
+
+				JSONObject pushNotification = _googleService.getPushNotification(context, intent);
+
+				persistableBundle.putString("pushNotification", pushNotification.toString());
+
+				builder.setExtras(persistableBundle);
+
+				jobScheduler.schedule(builder.build());
+			} else {
+				PushLegacyNotificationsService.enqueueWork(context, clazz, JOB_ID, intent);
+			}
+		} catch (Exception e) {
+			Log.e(PushNotificationsReceiver.class.getName(), "PushReceiver failed", e);
 			throw new IllegalArgumentException("Not found service of class " + className);
 		}
 	}
+
+	private GoogleServices _googleService = new GoogleServices();
 }
